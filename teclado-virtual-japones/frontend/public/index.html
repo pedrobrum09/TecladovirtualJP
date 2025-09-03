@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<script type="text/javascript">
+  // This is a CodeSandbox injection script that's used to
+  // add navigation and inspector functionality to the preview
+  (function () {
+    // 1) Get the <script> tag that's currently running:
+    var me = document.currentScript;
+
+    // 2) Create the blocking‐style <script> to load:
+    var script = document.createElement("script");
+    script.src = "https://codesandbox.io/p/preview-protocol.js";
+
+    // By default a dynamically‐inserted <script> is async=true.
+    // Turn async off to make it behave like a normal blocking <script>:
+    script.async = false;
+    // (Do NOT set defer.)
+
+    // 3) Insert it immediately after the current <script>:
+    me.parentNode.insertBefore(script, me);
+  })();
+
+  const isIFramePreview = window.top !== window.self;
+
+  // Only run this script in editor context
+  if (isIFramePreview) {
+    // This script is used to enable Chrome DevTools functionality
+    (function () {
+      var script = document.createElement("script");
+      script.src =
+        "https://codesandbox.io/p/chrome-devtool/protocol/index.js";
+
+      script.onload = () => {
+        const devtoolProtocol = window.chobitsu;
+        if (devtoolProtocol) {
+          window.addEventListener("message", (event) => {
+            const { type, data } = event.data;
+
+            if (type === "FROM_DEVTOOL") {
+              devtoolProtocol.sendRawMessage(data);
+            }
+          });
+
+          devtoolProtocol.setOnMessage((data) => {
+            if (data.includes('"id":"tmp')) {
+              return;
+            }
+
+            window.parent.postMessage({ type: "TO_DEVTOOL", data }, "*");
+          });
+
+          devtoolProtocol.sendRawMessage(
+            `{"id":5,"method":"Runtime.enable","params":{}}`
+          );
+        }        
+      }
+
+      (document.head || document.documentElement).prepend(script);
+    })();
+  }
+
+  if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined") {
+    let nextID = 0;
+    let hook = (__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+      renderers: new Map(),
+      supportsFiber: true,
+      inject: (renderer) => {
+        const id = nextID++;
+        hook.renderers.set(id, renderer);
+        return id;
+      },
+      onScheduleFiberRoot() {},
+      onCommitFiberRoot() {},
+      onCommitFiberUnmount() {},
+    });
+  }
+
+  document.currentScript.remove();
+</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Teclado Virtual Japonês</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="header">
+    <h1 class="title">Teclado Virtual Japonês</h1>
+    <div class="controls" role="toolbar" aria-label="Switches">
+      <label>
+        <span data-i18n="script">Script</span>
+        <select id="scriptSelect" aria-label="Script">
+          <option value="hiragana">Hiragana</option>
+          <option value="katakana">Katakana</option>
+          <option value="kanji">Kanji</option>
+        </select>
+      </label>
+      <label>
+        <span data-i18n="uiLang">Idioma UI</span>
+        <select id="langSelect" aria-label="Idioma da Interface">
+          <option value="pt">PT</option>
+          <option value="jp">日本語</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="editor">
+      <div id="editor" class="editor__area" contenteditable="true" role="textbox" aria-multiline="true" aria-autocomplete="list" aria-controls="suggestionsList" aria-expanded="false" aria-haspopup="listbox"></div>
+      <div id="hint" class="editor__hint" aria-hidden="true"></div>
+    </section>
+    <aside class="side">
+      <div id="suggestions" class="suggestions" role="listbox" aria-label="Sugestões" tabindex="0"></div>
+      <div id="details" class="details" aria-live="polite"></div>
+    </aside>
+  </main>
+
+  <div id="bottomSheet" class="bottom-sheet" aria-hidden="true">
+    <div class="bottom-sheet__content">
+      <div id="mobileSuggestions" class="suggestions" role="listbox" aria-label="Sugestões (mobile)"></div>
+      <button id="closeSheet" class="btn" data-i18n="close">Fechar</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/wanakana@5.3.1/umd/wanakana.min.js"></script>
+  <script type="module" src="./i18n.js"></script>
+  <script type="module" src="./api.js"></script>
+  <script type="module" src="./components/suggestions.js"></script>
+  <script type="module" src="./components/detailsPanel.js"></script>
+  <script type="module" src="./ime.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

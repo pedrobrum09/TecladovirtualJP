@@ -1,0 +1,38 @@
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:'Noto Sans JP',system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#0b0d12;color:#e6e9ef}
+.header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #1b2333;background:#0f1320;position:sticky;top:0;z-index:10}
+.title{font-size:20px;margin:0}
+.controls label{margin-right:12px;font-size:14px}
+.controls select{margin-left:6px;background:#121a2b;color:#e6e9ef;border:1px solid #2a3245;border-radius:6px;padding:6px}
+.main{display:grid;grid-template-columns:1fr 360px;gap:12px;padding:16px}
+.editor{position:relative}
+.editor__area{min-height:180px;padding:12px;border:1px solid #2a3245;border-radius:10px;background:#0f1627;outline:none;font-size:20px;line-height:1.6}
+.editor__area:focus{box-shadow:0 0 0 2px #4f46e5}
+.editor__hint{position:absolute;left:14px;top:14px;color:#6b7280;pointer-events:none}
+.suggestions{margin-top:12px;border:1px solid #2a3245;border-radius:10px;overflow:hidden;background:#0f1627;max-height:280px;overflow-y:auto}
+.suggestion{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #1b2333;cursor:pointer}
+.suggestion:last-child{border-bottom:none}
+.suggestion[aria-selected="true"],.suggestion:hover{background:#1b2540}
+.suggestion__surface{font-size:18px}
+.suggestion__reading{font-size:14px;color:#94a3b8}
+.suggestion__pos{font-size:12px;color:#a3a3a3;margin-left:auto}
+.details{margin-top:12px;padding:12px;border:1px solid #2a3245;border-radius:10px;background:#0f1627}
+.details h3{margin:0 0 8px 0;font-size:16px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border:1px solid #2a3245;padding:6px 8px;text-align:left}
+.btn{background:#4f46e5;color:#fff;border:none;border-radius:8px;padding:10px 14px;cursor:pointer}
+.btn:focus{outline:2px solid #93c5fd;outline-offset:2px}
+
+.bottom-sheet{position:fixed;left:0;right:0;bottom:0;background:#0f1627;border-top-left-radius:12px;border-top-right-radius:12px;transform:translateY(100%);transition:transform .25s ease;box-shadow:0 -10px 30px rgba(0,0,0,.4)}
+.bottom-sheet[aria-hidden="false"]{transform:translateY(0)}
+.bottom-sheet__content{padding:12px}
+
+@media (max-width:1023px){
+  .main{grid-template-columns:1fr}
+  .side{display:none}
+}
+
+@media (max-width:599px){
+  .editor__area{min-height:140px}
+}
